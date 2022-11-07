@@ -7,13 +7,13 @@ A golang mock implementation of `fs.FS` and friends for testing.
 [![Package Doc][package-doc-img-url]][package-doc-url] 
 [![Releases][release-img-url]][release-url]
 
-[ci-img-url]: https://github.com/halimath/expect-go/workflows/CI/badge.svg
-[go-report-card-img-url]: https://goreportcard.com/badge/github.com/halimath/expect-go
-[go-report-card-url]: https://goreportcard.com/report/github.com/halimath/expect-go
+[ci-img-url]: https://github.com/halimath/fsmock/workflows/CI/badge.svg
+[go-report-card-img-url]: https://goreportcard.com/badge/github.com/halimath/fsmock
+[go-report-card-url]: https://goreportcard.com/report/github.com/halimath/fsmock
 [package-doc-img-url]: https://img.shields.io/badge/GoDoc-Reference-blue.svg
-[package-doc-url]: https://pkg.go.dev/github.com/halimath/expect-go
-[release-img-url]: https://img.shields.io/github/v/release/halimath/expect-go.svg
-[release-url]: https://github.com/halimath/expect-go/releases
+[package-doc-url]: https://pkg.go.dev/github.com/halimath/fsmock
+[release-img-url]: https://img.shields.io/github/v/release/halimath/fsmock.svg
+[release-url]: https://github.com/halimath/fsmock/releases
 
 `fsmock` implements a mock filesystem satisfying `fs.FS` and other interfaces
 to enable easier testing of code that uses `fs.FS` to access file systems.
