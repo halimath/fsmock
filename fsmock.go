@@ -77,7 +77,7 @@ func (d *Dir) find(op, name string) (Entry, error) {
 }
 
 func (d *Dir) findPath(pathElements []string) (Entry, error) {
-	c := d.findChild(pathElements[0])
+	c, _ := d.findChild(pathElements[0])
 	if c == nil {
 		return nil, fs.ErrNotExist
 	}
@@ -93,13 +93,13 @@ func (d *Dir) findPath(pathElements []string) (Entry, error) {
 	return nil, fs.ErrInvalid
 }
 
-func (d *Dir) findChild(name string) Entry {
-	for _, e := range d.Children {
+func (d *Dir) findChild(name string) (Entry, int) {
+	for i, e := range d.Children {
 		if e.name() == name {
-			return e
+			return e, i
 		}
 	}
-	return nil
+	return nil, 0
 }
 
 type openDir struct {
@@ -302,7 +302,7 @@ func (f *FS) Touch(name string) error {
 		return err
 	}
 
-	c := d.findChild(file)
+	c, _ := d.findChild(file)
 	if c == nil {
 		d.Children = append(d.Children, EmptyFile(file))
 		return nil
@@ -323,7 +323,7 @@ func (f *FS) Mkdir(name string) error {
 		return err
 	}
 
-	if c := d.findChild(toCreate); c != nil {
+	if c, _ := d.findChild(toCreate); c != nil {
 		return &fs.PathError{
 			Op:   "mkdir",
 			Path: name,
@@ -333,6 +333,34 @@ func (f *FS) Mkdir(name string) error {
 
 	d.Children = append(d.Children, NewDir(toCreate))
 	return nil
+}
+
+// Rm removes an element from the filesystem in a similar way to the unix shell
+// command "rm -rf". name is the full path of the element to remove. If the
+// element is a directory it is recursively.
+func (f *FS) Rm(name string) {
+	parent, elem := path.Split(name)
+	parent = strings.TrimRight(parent, "/")
+
+	d, err := f.findDir("open", parent)
+	if err != nil {
+		// The parent directory does not exist. So it's impossible for name
+		// to exist. Looks like we're done here...
+		return
+	}
+
+	c, idx := d.findChild(elem)
+
+	if c == nil {
+		// Child is not found. Everything done...
+		return
+	}
+
+	if idx != len(d.Children)-1 {
+		d.Children[idx] = d.Children[len(d.Children)-1]
+	}
+
+	d.Children = d.Children[:len(d.Children)-1]
 }
 
 // Open opens the named file.

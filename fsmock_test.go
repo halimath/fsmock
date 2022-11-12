@@ -89,6 +89,20 @@ func Example() {
 		panic(err)
 	}
 
+	fmt.Println("---")
+
+	fsys.Rm("internal")
+
+	fs.WalkDir(fsys, "", func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		fmt.Println(path)
+
+		return nil
+	})
+
 	// Output: package main
 	// ---
 	// go.mod
@@ -100,4 +114,11 @@ func Example() {
 	// 0
 	// 1
 	// ---
+	// ---
+	//
+	// go.mod
+	// go.sum
+	// cmd
+	// cmd/main.go
+	// cmd/main_test.go
 }
